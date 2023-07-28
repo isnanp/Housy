@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import { propTypes } from "react-bootstrap/esm/Image";
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { API, setAuthToken } from "../../config/api";
+import { UserContext } from "../../context/usercontext";
 
 export default function Login(props) {
+    const [, dispatch ] = useContext(UserContext)
+    const navigate = useNavigate()
+
      const [formLogin, setFormLogin] = useState({
           Username: "",
           Password: "",
@@ -17,18 +24,51 @@ export default function Login(props) {
     });
   };
 
+  const handleSubmit = useMutation( async (e) => {
+    try {
+      e.preventDefault();
+
+      const response = await API.post("/login", formLogin)
+      alert("Login Success!");
+      console.log("ini login", response.data.data);
+
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: response.data.data,
+      });
+
+       setAuthToken(localStorage.token);
+      console.log(response.data.data);
+       if (response.data.data.role === "owner") {
+        navigate('/list-transaksi');
+      } else {
+        navigate("/");
+      }
+
+      setFormLogin({
+        Username: "",
+        Password: "",
+      })
+
+      props.onHide();
+
+    } catch (err) {
+        alert("GAGAL LOGIN BRO", err)
+    }
+  })
+
     return (
         <Modal show={props.show} onHide={props.onHide}>
         <Modal.Header closeButton>
         </Modal.Header>
         <Modal.Body>
           <h1 className="formTitle">LOGIN</h1>
-            <Form >
-              <FloatingLabel controlId="username" label="Username" className="mb-3">
+            <Form onSubmit={(e) => handleSubmit.mutate(e)}>
+              <FloatingLabel controlid="username" label="Username" className="mb-3">
                   <Form.Control
                       type="text"
                       placeholder="example"
-                      controlId='username'
+                      controlid='username'
                       name='Username'
                       value={Username}
                       onChange={OnChangeHandler}
@@ -39,7 +79,7 @@ export default function Login(props) {
                   <Form.Control
                       type="password"
                       placeholder="Password"
-                      controlId='password'
+                      controlid='password'
                       name='Password'
                       value={Password}
                       onChange={OnChangeHandler}

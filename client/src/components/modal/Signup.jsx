@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button, FloatingLabel, Form, Modal } from "react-bootstrap";
 import { propTypes } from "react-bootstrap/esm/Image";
+import { useMutation } from "react-query";
+import { API } from "../../config/api";
 
 export default function Signup(props){
     const [form, setForm] = useState({
@@ -10,11 +12,11 @@ export default function Signup(props){
 	Fullname : "",
     Role : "",
 	Gender : "",
-	Telphone : "",
+	Phone : "",
 	Address : "",
   });
 
-  const { Username, Role, Email, Password, Fullname, Gender, Telphone, Address } = form;
+  const { Username, Role, Email, Password, Fullname, Gender, Phone, Address } = form;
 
   const handleChange = (e) => {
     setForm({
@@ -22,6 +24,35 @@ export default function Signup(props){
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleSubmit = useMutation( async (e) => {
+    try {
+      e.preventDefault();
+      const response = await API.post("/register", form);
+
+        alert("Register Success!");
+
+      console.log("register success : ", response);
+
+      props.onHide();
+
+      setForm({
+        Username : "" ,
+        Email   : "",
+        Password : "",
+        Fullname : "",
+        Role : "",
+        Gender : "",
+        Phone : "",
+        Address : "",
+      });
+
+    } catch (err) {
+        alert("Failed to register!");
+          
+    }
+    props.onHide();
+  });
 
 
     return (
@@ -31,7 +62,7 @@ export default function Signup(props){
             </Modal.Header>
             <Modal.Body>
             <h1 className="text-center">SIGNUP</h1>
-            <Form >
+            <Form onSubmit={(e) => handleSubmit.mutate(e)}>
                 <FloatingLabel
                     controlId="floatingInput"
                     label="Nama Lengkap"
@@ -62,8 +93,8 @@ export default function Signup(props){
 
                 <Form.Select aria-label="Default select example" className='mb-3' name='Role' value={Role} onChange={handleChange}>
                 <option hidden>List As</option>
-                <option value="Tenant">Tenant</option>
-                <option value="Owner">Owner</option>
+                <option value="tenant">Tenant</option>
+                <option value="owner">Owner</option>
                 </Form.Select>  
 
 
@@ -78,7 +109,7 @@ export default function Signup(props){
                     label="Telp"
                     className="mb-3"
                 >
-                    <Form.Control type="text" name='Telphone' value={Telphone} onChange={handleChange} />
+                    <Form.Control type="text" name='Phone' value={Phone} onChange={handleChange} />
                 </FloatingLabel>
 
                 <FloatingLabel controlId="floatingTextarea2" label="Alamat">

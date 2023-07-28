@@ -19,7 +19,7 @@ export default function Filter() {
                             id="toggle-check"
                             type="checkbox"
                             variant="outline-primary"
-                            value="1"  
+                            value="day"  
                         >
                             Day
                         </ToggleButton>
@@ -29,7 +29,7 @@ export default function Filter() {
                             id="toggle-check"
                             type="checkbox"
                             variant="outline-primary"
-                            value="1"  
+                            value="months"  
                         >
                             Mont
                         </ToggleButton>

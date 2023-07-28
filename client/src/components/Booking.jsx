@@ -73,7 +73,7 @@ export default function Booking() {
                         </Col>
                     </Row> 
             </Container> 
-                <div className="d-flex justify-content-end mt-4" style={{marginRight:"12rem"}}>
+                <div className="d-flex justify-content-end mt-4" style={{marginRight:"1rem"}}>
                     <Button className="px-5">PAY</Button>
                 </div>       
         </div>
